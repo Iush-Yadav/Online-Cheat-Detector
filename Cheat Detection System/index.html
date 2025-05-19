@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Cheat Detector Logs</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 20px; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+  th { background-color: #f2f2f2; }
+  input { padding: 6px; margin-bottom: 10px; }
+</style>
+<script>
+  // Auto refresh every 10 seconds
+  setTimeout(() => { window.location.reload(); }, 10000);
+</script>
+</head>
+<body>
+  <h1>Cheat Detector Logs</h1>
+  <form method="get">
+    <input type="text" name="filter" placeholder="Filter events..." value="{{ filter }}" />
+    <button type="submit">Apply</button>
+    <button type="button" onclick="window.location.href='/'">Clear</button>
+  </form>
+  <table>
+    <thead>
+      <tr><th>Timestamp</th><th>Event</th></tr>
+    </thead>
+    <tbody>
+      {% for log in logs %}
+      <tr>
+        <td>{{ log[0] }}</td>
+        <td>{{ log[1] }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="2">No logs found.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</body>
+</html>

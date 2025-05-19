@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Eye Movement Detection</title>
+  <style>
+    body { font-family: Arial; background: #111; color: #eee; text-align: center; }
+    #video-container { display: inline-block; position: relative; }
+    #status { margin-top: 10px; font-size: 1.1em; }
+    .warning { color: red; font-weight: bold; }
+    #log-box { max-height: 200px; overflow-y: auto; margin-top: 20px; border: 1px solid #666; padding: 10px; background: #222; text-align: left; width: 80%; margin-left: auto; margin-right: auto; }
+  </style>
+</head>
+<body>
+  <h1>Eye Movement Detection System</h1>
+  <div id="video-container">
+    <img src="{{ url_for('video_feed') }}" width="640" height="480" />
+  </div>
+  <div id="status">
+    <p>Calibration: <span id="calib-progress">0%</span></p>
+    <p>Direction: <span id="eye-dir">CENTER</span></p>
+    <p>Left Glances: <span id="left-count">0</span></p>
+    <p>Right Glances: <span id="right-count">0</span></p>
+    <p>Sustained Duration: <span id="sustained">0</span>s</p>
+    <p class="warning" id="warning-msg" style="display:none;">WARNING DETECTED!</p>
+  </div>
+
+  <div id="log-box"><h3>Recent Events:</h3><div id="event-log"></div></div>
+
+  <script>
+    async function updateStatus() {
+      const res = await fetch('/status');
+      const data = await res.json();
+
+      document.getElementById('calib-progress').textContent = (data.calibration_progress * 100).toFixed(0) + '%';
+      document.getElementById('eye-dir').textContent = data.eye_direction;
+      document.getElementById('left-count').textContent = data.left_glances;
+      document.getElementById('right-count').textContent = data.right_glances;
+      document.getElementById('sustained').textContent = data.sustained_duration;
+      document.getElementById('warning-msg').style.display = data.warning_active ? 'block' : 'none';
+
+      const logDiv = document.getElementById('event-log');
+      logDiv.innerHTML = data.events.map(e => `<p>${e}</p>`).join('');
+      logDiv.scrollTop = logDiv.scrollHeight;
+    }
+
+    setInterval(updateStatus, 500);
+  </script>
+</body>
+</html>
